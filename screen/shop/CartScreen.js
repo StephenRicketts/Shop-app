@@ -32,7 +32,7 @@ const CartScreen = (props) => {
         <Text style={styles.summaryText}>
           Total:{" "}
           <Text style={styles.amount}>
-            ${parseFloat(cartTotalAmount.toFixed(2))}
+            ${Math.round(cartTotalAmount.toFixed(2) * 100) / 100}
           </Text>
         </Text>
         <Button
@@ -40,7 +40,7 @@ const CartScreen = (props) => {
           title="Order Now"
           disabled={cartItems.length === 0}
           onPress={() => {
-            dispatch(ordersActions.oddOrder(cartItems, cartTotalAmount));
+            dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
           }}
         />
       </View>
@@ -52,6 +52,7 @@ const CartScreen = (props) => {
             quantity={itemData.item.quantity}
             title={itemData.item.productTitle}
             amount={itemData.item.sum}
+            deletable
             onRemove={() => {
               dispatch(cartActions.removeFromCart(itemData.item.productId));
             }}
