@@ -1,7 +1,11 @@
 import React from "react";
+import { SafeAreaView, Button, View } from "react-native";
 import { createStackNavigator } from "react-navigation-stack";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
-import { createDrawerNavigator } from "react-navigation-drawer";
+import {
+  createDrawerNavigator,
+  DrawerNavigatorItems,
+} from "react-navigation-drawer";
 import ProductsOverviewScreen from "../screen/shop/ProductsOverviewScreen";
 import ProductDetailScreen from "../screen/shop/ProductDetailScreen";
 import CartScreen from "../screen/shop/CartScreen";
@@ -9,8 +13,11 @@ import OrdersScreen from "../screen/shop/OrdersScreen";
 import UserProductsScreen from "../screen/user/UserProductsScreen";
 import EditProductScreen from "../screen/user/EditProductScreen";
 import AuthScreen from "../screen/user/AuthScreen";
+import StartupScreen from "../screen/StartupScreen";
 import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import * as authActions from "../store/actions/auth";
 
 const defaultNavOptions = {
   headerStyle: {
@@ -80,6 +87,24 @@ const ShopNavigator = createDrawerNavigator(
     contentOptions: {
       activeTintColor: Colors.primary,
     },
+    contentComponent: (props) => {
+      const dispatch = useDispatch();
+      return (
+        <View style={{ flex: 1, padding: 20 }}>
+          <SafeAreaView forceInset={{ top: "always", horizontal: "never" }}>
+            <DrawerNavigatorItems {...props} />
+            <Button
+              title="Logout"
+              color={Colors.primary}
+              onPress={() => {
+                dispatch(authActions.logout());
+                props.navigation.navigate("Auth");
+              }}
+            />
+          </SafeAreaView>
+        </View>
+      );
+    },
   }
 );
 
@@ -93,6 +118,7 @@ const AuthNavigator = createStackNavigator(
 );
 
 const MainNavigator = createSwitchNavigator({
+  Startup: StartupScreen,
   Auth: AuthNavigator,
   Shop: ShopNavigator,
 });
